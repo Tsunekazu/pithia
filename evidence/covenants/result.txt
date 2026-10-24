@@ -1,0 +1,22 @@
+=== RUN   TestNativeFixedOutputCovenant
+    covenant_test.go:138: PASS P2SH native covenant; redeem=196 bytes, sigscript=324 bytes, nonpush_ops=30, sigops=1, prefix=91 bytes, grinding locktime=208
+    covenant_test.go:146: PASS same covenant on distinct deposit outpoint without an external signature
+=== RUN   TestNativeFixedOutputCovenant/destination
+    covenant_test.go:173: rejected as required
+=== RUN   TestNativeFixedOutputCovenant/amount
+    covenant_test.go:173: rejected as required
+=== RUN   TestNativeFixedOutputCovenant/extra_output
+    covenant_test.go:173: rejected as required
+=== RUN   TestNativeFixedOutputCovenant/wrong_prefix
+    covenant_test.go:173: rejected as required
+=== RUN   TestNativeFixedOutputCovenant/wrong_witness
+    covenant_test.go:173: rejected as required
+Native Decred fixed-output covenant engine checks passed; NOT a production vault or relay/chain validation.
+--- PASS: TestNativeFixedOutputCovenant (0.01s)
+    --- PASS: TestNativeFixedOutputCovenant/destination (0.00s)
+    --- PASS: TestNativeFixedOutputCovenant/amount (0.00s)
+    --- PASS: TestNativeFixedOutputCovenant/extra_output (0.00s)
+    --- PASS: TestNativeFixedOutputCovenant/wrong_prefix (0.00s)
+    --- PASS: TestNativeFixedOutputCovenant/wrong_witness (0.00s)
+PASS
+ok  	pi-ex-covenant-experiment	0.009s

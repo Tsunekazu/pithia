@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pithia</title>
+<meta name="description" content="Independent research and experiments for Decred. Pithia investigates what Decred could build, tests the promising ideas and publishes the evidence. Stakeholders vote on what comes first. Concept preview.">
+<meta property="og:title" content="Pithia">
+<meta property="og:description" content="Independent research and experiments for Decred. Investigations, a reproducible covenant experiment, and a vote on what comes first.">
+<meta property="og:image" content="https://tsunekazu.github.io/pithia/assets/share-card.png">
+<meta property="og:url" content="https://tsunekazu.github.io/pithia/">
+<link rel="canonical" href="https://tsunekazu.github.io/pithia/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/coin-128.png">
+<style>
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 300; font-display: swap; src: url(fonts/IBMPlexMono-300-normal-latin.woff2) format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/IBMPlexMono-400-normal-latin.woff2) format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/IBMPlexMono-500-normal-latin.woff2) format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400 500; font-display: swap; src: url(fonts/IBMPlexSans-400-normal-latin.woff2) format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/IBMPlexSans-400-normal-greek.woff2) format('woff2'); unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+@font-face { font-family: 'IBM Plex Serif'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/IBMPlexSerif-700-normal-latin.woff2) format('woff2'); }
+@font-face { font-family: 'VT323'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/VT323-400-normal-latin.woff2) format('woff2'); }
+
+/* Layout: a tour of retro computing in Decred colours.
+   Cobalt screen (hero) -> paper printouts (research) -> cobalt (how) -> navy terminal (two DOS demos)
+   -> cobalt (stages) -> paper (ground rules) -> cobalt sign-off over Delphi. Bands meet through 1-bit dither strips. */
+:root {
+  --cobalt: #1c40c8;      /* Decred blue, deepened: calm on the eyes, white text at 8:1 */
+  --cobalt-deep: #15339f;
+  --navy: #091440;        /* Decred dark blue */
+  --paper: #f3f5fb;
+  --sheet: #ffffff;
+  --text: #13205a;        /* long reading on paper */
+  --ink: #1d4ced;         /* headings, labels and links on paper */
+  --white: #ffffff;
+  --pale: #d3defe;
+  --muted: #a3b9fd;
+  --line: rgba(255, 255, 255, .32);
+  --rule: #c3d0f8;
+  --turq: #2ed6a1;        /* Decred turquoise: live, chosen, now */
+  --turq-ink: #0b7d5b;
+  --amber: #ffcf6e;
+  --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --slab: "IBM Plex Serif", Georgia, serif;
+  --px: "VT323", "Lucida Console", ui-monospace, monospace;
+  --greek: var(--sans);
+  /* title voice: one family, two weights, a size factor */
+  --display: var(--mono);
+  --dw: 300;
+  --dw2: 400;
+  --dsize: .74;           /* mono runs wide: titles set smaller than a serif would be */
+  --dsize2: .86;          /* small titles shrink less */
+  --dtrack: -.04em;
+  --accent: var(--turq);
+  --art: .88;             /* pixel art a touch off pure white */
+  --gut: max(clamp(16px, 4vw, 40px), env(safe-area-inset-left, 0px));
+  --gut-r: max(clamp(16px, 4vw, 40px), env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; }
+body { background: var(--cobalt); color: var(--white); font: 400 18px/1.55 var(--sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+a { color: inherit; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--turq); outline-offset: 3px; }
+.skip { position: absolute; left: -9999px; top: 8px; background: var(--white); color: var(--navy); padding: 8px 12px; z-index: 20; font: 500 13px var(--mono); }
+.skip:focus { left: 8px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.sr { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding-left: var(--gut); padding-right: var(--gut-r); }
+.label { font: 500 12px/1.4 var(--mono); letter-spacing: .13em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 18px; color: var(--pale); display: flex; align-items: center; gap: 12px; }
+.eyebrow::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+h2 { font: var(--dw) calc(clamp(38px, 4.8vw, 66px) * var(--dsize))/1.04 var(--display); letter-spacing: var(--dtrack); margin: 0 0 22px; text-wrap: balance; }
+h1 em, h2 em, .aside em, .etym em { font-style: normal; color: var(--accent); }
+.big { font: var(--dw) calc(clamp(22px, 2.2vw, 28px) * var(--dsize2))/1.4 var(--display); margin: 0 0 22px; max-width: 32em; }
+.band { padding-block: clamp(72px, 9vw, 128px); position: relative; }
+.cobalt { background: var(--cobalt); color: var(--white); }
+.paper { background: var(--paper); color: var(--text); --accent: var(--turq-ink); }
+.paper .eyebrow { color: var(--ink); }
+.paper h2 { color: var(--ink); }
+.navy { background: var(--navy); color: var(--white); }
+.desk { background-image: radial-gradient(rgba(255, 255, 255, .08) 1px, transparent 1.2px); background-size: 6px 6px; }
+.dither { height: 32px; background-size: 128px 32px; background-repeat: repeat-x; image-rendering: pixelated; }
+.d-cp { background-image: url(assets/dither-cobalt-paper.png); }
+.d-pc { background-image: url(assets/dither-paper-cobalt.png); }
+.d-cn { background-image: url(assets/dither-cobalt-navy.png); }
+.d-nc { background-image: url(assets/dither-navy-cobalt.png); }
+
+/* ───────── top bar ───────── */
+.topbar .wrap { display: flex; align-items: center; gap: 22px; padding-top: 22px; position: relative; z-index: 3; }
+.mark { font: 500 13px/1 var(--mono); letter-spacing: .42em; text-decoration: none; display: flex; align-items: center; gap: 12px; }
+.mark img { width: 32px; height: 32px; image-rendering: pixelated; }
+.pill { border: 1px solid rgba(255, 255, 255, .55); padding: 5px 8px 4px; color: var(--pale); white-space: nowrap; }
+.pill i { display: inline-block; width: 7px; height: 7px; background: var(--turq); margin-right: 8px; animation: blink 1.6s steps(1) infinite; }
+.topbar nav { margin-left: auto; display: flex; gap: 22px; }
+.topbar nav a { text-decoration: none; color: var(--pale); }
+.topbar nav a:hover { color: var(--white); }
+
+/* ───────── hero ───────── */
+.hero { position: relative; overflow: hidden; }
+.bgword { position: absolute; left: 50%; top: 58px; transform: translateX(-50%); font: 100 clamp(160px, 25vw, 380px)/.8 var(--display); letter-spacing: .02em; color: rgba(255, 255, 255, .045); white-space: nowrap; pointer-events: none; user-select: none; z-index: 1; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) 640px; min-height: 680px; position: relative; z-index: 2; }
+.copy { display: flex; flex-direction: column; justify-content: center; padding: 56px 0 30px; max-width: 610px; }
+.kicker { color: var(--pale); margin: 0 0 24px; }
+.cursor { display: inline-block; width: .62em; height: 1.05em; background: var(--white); vertical-align: -.2em; margin-left: .35em; animation: blink 1.1s steps(1) infinite; }
+h1 { font: var(--dw) calc(clamp(48px, 6.4vw, 92px) * var(--dsize))/1 var(--display); letter-spacing: var(--dtrack); margin: 0 0 26px; text-wrap: balance; }
+.lede { color: var(--white); max-width: 25em; margin: 0 0 14px; font: 500 clamp(20px, 1.8vw, 24px)/1.38 var(--sans); }
+.lede span { color: var(--turq); }
+.sublede { color: var(--pale); max-width: 34em; margin: 0 0 32px; font-size: 17px; }
+.ctas { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: center; }
+.btn { font: 500 12.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--white); padding: 16px 20px 15px; transition: background .15s, color .15s; }
+.btn::before { content: "▸ "; }
+.btn:hover, .btn:focus-visible { background: var(--white); color: var(--cobalt); outline: none; }
+.textlink { font: 500 12.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--pale); text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .35); padding-bottom: 4px; }
+.textlink:hover { color: var(--white); border-color: var(--white); }
+.copy .foot { margin-top: auto; padding-top: 40px; display: grid; gap: 14px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.finding { display: grid; gap: 8px; align-content: start; padding: 14px 16px 15px; border: 1px solid var(--line); background: rgba(9, 20, 64, .3); text-decoration: none; }
+.finding:hover { border-color: var(--white); }
+.finding .label { display: flex; align-items: center; gap: 8px; color: var(--turq); }
+.finding .label i { width: 7px; height: 7px; flex: none; background: var(--turq); animation: blink 1.6s steps(1) infinite; }
+.finding .t { font-size: 15px; line-height: 1.45; }
+.finding .go { color: var(--pale); }
+.name { margin: 0; font: 400 13px/1.6 var(--mono); color: var(--pale); }
+.name b { color: var(--white); font-weight: 500; }
+.name span { color: var(--muted); }
+.legal { color: var(--muted); font-size: 10.5px; margin: 0; }
+.oracle { position: relative; width: 640px; height: 680px; margin: 0; align-self: end; overflow: hidden; }
+.oracle img { position: absolute; left: 0; top: 0; width: 640px; height: 800px; max-width: none; image-rendering: pixelated; opacity: var(--art); }
+.vapor { position: absolute; inset: 0; pointer-events: none; }
+.vapor span { position: absolute; font: 500 11.5px/1 var(--mono); letter-spacing: .08em; color: var(--white); white-space: nowrap; opacity: 0; animation: rise 12s linear infinite; }
+.vapor span::before { content: "· "; color: var(--turq); }
+@keyframes rise { 0% { transform: translate(0, 0); opacity: 0; } 12% { opacity: .95; } 70% { opacity: .55; } 100% { transform: translate(var(--dx, -20px), -300px); opacity: 0; } }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ───────── research (paper printouts) ───────── */
+.sec-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px clamp(32px, 6vw, 96px); align-items: end; margin-bottom: 44px; }
+.sec-head p { margin: 0; max-width: 34em; }
+.qs { margin: 0; padding: 0 0 0 18px; list-style: none; display: grid; gap: 7px; border-left: 1px solid var(--rule); color: var(--ink); }
+.qs li::before { content: "▸ "; }
+.brief { position: relative; background: var(--sheet); padding: 28px 44px 26px; box-shadow: 0 0 0 1px var(--rule), 7px 7px 0 var(--rule); background-image: repeating-linear-gradient(180deg, transparent 0 46px, rgba(29, 76, 237, .04) 46px 92px); }
+.brief::before, .brief::after { content: ""; position: absolute; top: 0; bottom: 0; width: 20px; background: radial-gradient(circle at 10px 12px, var(--paper) 0 3.6px, var(--rule) 3.7px 4.4px, transparent 4.6px) 0 0 / 20px 24px repeat-y; }
+.brief::before { left: 0; border-right: 1px dashed var(--rule); }
+.brief::after { right: 0; border-left: 1px dashed var(--rule); }
+.featured { margin-bottom: 30px; }
+.featured .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; align-items: start; }
+.b-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; color: var(--ink); margin-bottom: 18px; flex-wrap: wrap; }
+.status { display: inline-flex; align-items: center; gap: 7px; padding: 3px 7px 2px; border: 1px solid currentColor; }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+.status.exp { background: var(--turq-ink); border-color: var(--turq-ink); color: var(--sheet); }
+.status.hyp { border-style: dashed; }
+.status.hyp::before { background: transparent; border: 1px solid currentColor; }
+.status.open { border-style: dotted; }
+.status.open::before { content: "?"; width: auto; height: auto; background: none; border-radius: 0; font-weight: 500; }
+.brief h3 { font: var(--dw2) calc(30px * var(--dsize2))/1.15 var(--display); color: var(--ink); margin: 0 0 10px; text-wrap: balance; }
+.brief .q { font: var(--dw) calc(19px * var(--dsize2))/1.45 var(--display); color: var(--ink); margin: 0 0 20px; }
+.take { margin: 0 0 20px; padding: 12px 14px 13px; background: rgba(29, 76, 237, .07); font: 500 17.5px/1.5 var(--sans); color: var(--text); }
+.take b { display: block; font: 500 11px/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); margin-bottom: 5px; }
+.fields { margin: 0; display: grid; gap: 16px; }
+.fields > div { display: grid; gap: 5px; }
+.fields dt { font: 500 11px/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+.fields dt small { font: inherit; opacity: .6; letter-spacing: .1em; }
+.fields dd { margin: 0; font-size: 17px; line-height: 1.55; }
+.fields .obj dt { justify-self: start; background: var(--ink); color: var(--sheet); padding: 3px 6px 2px; }
+.fields .exp dt::before { content: "▸ "; }
+.designs { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.designs li { display: grid; grid-template-columns: 24px 1fr; }
+.designs b { font: 500 13px/1.9 var(--mono); color: var(--ink); }
+.tlog { margin: 0; padding: 14px 16px; background: var(--navy); color: var(--pale); font: 400 12px/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.tlog b { color: var(--turq); font-weight: 500; }
+.tlog .c { color: var(--white); }
+.panel-h { display: flex; justify-content: space-between; gap: 10px; color: var(--ink); margin: 0 0 8px; }
+.repro { margin-top: 22px; border: 1px solid var(--rule); background: var(--paper); padding: 16px 18px 18px; }
+.repro pre { margin: 10px 0 14px; font: 400 12.5px/1.6 var(--mono); color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+.repro pre i { font-style: normal; color: var(--ink); opacity: .7; }
+.files { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.files a { display: inline-block; font: 400 12.5px/1.2 var(--mono); color: var(--ink); border: 1px solid var(--rule); background: var(--sheet); padding: 5px 8px; text-decoration: none; }
+.files a:hover { border-color: var(--ink); }
+details.more { margin-top: 20px; border-top: 1px dashed var(--rule); padding-top: 12px; }
+details.more summary { cursor: pointer; list-style: none; font: 500 11.5px/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+details.more summary::-webkit-details-marker { display: none; }
+details.more summary::before { content: "[+] "; }
+details.more[open] summary::before { content: "[–] "; }
+details.more .in { display: grid; gap: 14px; padding-top: 14px; font-size: 16px; }
+details.more h4 { font: 500 11px/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 4px; color: var(--ink); }
+details.more h4 small { font: inherit; opacity: .6; }
+details.more p { margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.chips li { font: 400 12.5px/1.2 var(--mono); border: 1px dashed var(--ink); color: var(--ink); padding: 4px 7px; }
+.src { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; font: 400 13px/1.45 var(--mono); }
+.src a { color: var(--ink); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.src li::before { content: "↗ "; color: var(--ink); }
+.queue { margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--rule); font: 400 14px/1.6 var(--mono); }
+.queue b { color: var(--ink); font-weight: 500; }
+.appendix { margin-top: 34px; display: grid; gap: 8px; }
+.evfile { background: var(--sheet); border: 1px solid var(--rule); padding: 10px 14px; }
+.evfile summary { cursor: pointer; font: 500 13px var(--mono); color: var(--ink); }
+.evfile pre { margin: 10px 0 0; max-height: 480px; overflow: auto; font: 400 12px/1.5 var(--mono); color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ───────── how ───────── */
+.how h2 { max-width: 15em; }
+.loop { list-style: none; margin: 46px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.loop li { position: relative; border: 1px solid var(--line); border-right: 0; padding: 22px 22px 26px; display: grid; gap: 10px; align-content: start; }
+.loop li:last-child { border-right: 1px solid var(--line); }
+.loop li:not(:last-child)::after { content: "▶"; position: absolute; right: -8px; top: 26px; font-size: 13px; color: var(--white); background: var(--cobalt); line-height: 1; padding: 2px 0; z-index: 1; }
+.loop .n { font: 400 15px var(--mono); color: var(--muted); }
+.loop h3 { font: var(--dw) calc(clamp(28px, 2.6vw, 36px) * var(--dsize))/1 var(--display); margin: 0; }
+.loop .who { color: var(--turq); }
+.loop p { margin: 0; color: var(--pale); font-size: 16px; }
+.return { margin: 0; position: relative; height: 46px; border: 1px solid var(--line); border-top: 0; display: flex; align-items: flex-end; justify-content: center; }
+.return span { transform: translateY(50%); background: var(--cobalt); padding: 0 14px; color: var(--pale); }
+.return::before { content: "▲"; position: absolute; left: -7px; top: -6px; font-size: 12px; color: var(--white); line-height: 1; }
+.how .aside { margin: 54px 0 0; font: var(--dw) calc(clamp(24px, 2.4vw, 32px) * var(--dsize2))/1.35 var(--display); }
+
+/* ───────── DOS demos (vote + signals) ───────── */
+.try-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 18px clamp(32px, 6vw, 96px); align-items: end; margin-bottom: 56px; }
+.try-head h2 { margin: 0; }
+.try-head > p { margin: 0; color: var(--pale); max-width: 34em; }
+.dos { position: relative; background: var(--cobalt); border: 6px double var(--white); box-shadow: 14px 14px 0 rgba(0, 0, 0, .5); padding: 36px clamp(16px, 3vw, 32px) 26px; font: 400 24px/1.2 var(--px); color: var(--white); }
+.dos > .title { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: var(--cobalt); padding: 0 10px; white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+.dos > .title::before { content: "[■] "; color: var(--turq); }
+.dos .sub { margin: 0 0 22px; font: 400 13.5px/1.5 var(--mono); color: var(--pale); }
+.dos .fine { margin: 18px 0 0; font: 400 13px/1.5 var(--mono); color: var(--pale); }
+.slip { background: var(--paper); color: var(--navy); padding: 16px 18px 26px; position: relative;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%; }
+
+/* ROADMAP.EXE */
+.ballot-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, 340px); gap: 30px; align-items: start; }
+.lh, .row { display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 46px); gap: 0 10px; align-items: center; }
+.lh { color: var(--pale); font-size: 20px; padding-bottom: 6px; border-bottom: 2px solid var(--white); }
+.lh span + span { text-align: center; }
+.row { padding: 12px 0; border-bottom: 1px dashed rgba(255, 255, 255, .35); }
+.dir b { display: block; font-weight: 400; color: var(--white); font-size: 26px; line-height: 1.05; }
+.dir small { display: block; font: 400 13.5px/1.45 var(--mono); color: var(--pale); margin-top: 4px; }
+.dir i { display: inline-block; font-style: normal; font-size: 17px; letter-spacing: .06em; text-transform: uppercase; color: var(--navy); background: var(--pale); padding: 0 6px; margin-top: 7px; }
+.dir i.q { background: transparent; color: var(--pale); border: 1px dashed var(--pale); }
+.dir .bl { margin-left: 10px; font-size: 18px; color: var(--turq); text-underline-offset: 3px; }
+.row label { display: grid; place-items: center; height: 40px; border: 2px solid var(--white); color: var(--pale); cursor: pointer; font-size: 24px; }
+.row label:hover { background: rgba(255, 255, 255, .12); }
+.row input:checked + label { background: var(--turq); border-color: var(--turq); color: var(--navy); }
+.row input:focus-visible + label { outline: 2px solid var(--turq); outline-offset: 2px; }
+.row:has(input:checked ~ input:checked) input:checked + label { background: var(--amber); border-color: var(--amber); }
+.warn { display: none; margin: 14px 0 0; color: var(--amber); font-size: 21px; }
+.ballot:has(.row input:checked ~ input:checked) .warn { display: block; }
+.out { font-size: 22px; }
+.out .oh { margin: 0 0 8px; text-align: center; }
+.slot { border-top: 2px solid var(--navy); padding: 9px 0 12px; display: grid; gap: 3px; }
+.slot .k { color: var(--ink); font-size: 18px; letter-spacing: .12em; text-transform: uppercase; }
+.slot .pick, .slot .ph { display: none; font-size: 25px; line-height: 1.1; }
+.slot .ph { color: #7f8bbd; }
+.ballot:has(#r1-vault:checked) .s1 [data-d="vault"],
+.ballot:has(#r1-cake:checked) .s1 [data-d="cake"],
+.ballot:has(#r1-polls:checked) .s1 [data-d="polls"],
+.ballot:has(#r1-paid:checked) .s1 [data-d="paid"],
+.ballot:has(#r1-market:checked) .s1 [data-d="market"],
+.ballot:has(#r1-onboard:checked) .s1 [data-d="onboard"],
+.ballot:has(#r2-vault:checked) .s2 [data-d="vault"],
+.ballot:has(#r2-cake:checked) .s2 [data-d="cake"],
+.ballot:has(#r2-polls:checked) .s2 [data-d="polls"],
+.ballot:has(#r2-paid:checked) .s2 [data-d="paid"],
+.ballot:has(#r2-market:checked) .s2 [data-d="market"],
+.ballot:has(#r2-onboard:checked) .s2 [data-d="onboard"],
+.ballot:has(#r3-vault:checked) .s3 [data-d="vault"],
+.ballot:has(#r3-cake:checked) .s3 [data-d="cake"],
+.ballot:has(#r3-polls:checked) .s3 [data-d="polls"],
+.ballot:has(#r3-paid:checked) .s3 [data-d="paid"],
+.ballot:has(#r3-market:checked) .s3 [data-d="market"],
+.ballot:has(#r3-onboard:checked) .s3 [data-d="onboard"] { display: block; }
+.ballot:not(:has([name="r1"]:checked)) .s1 .ph, .ballot:not(:has([name="r2"]:checked)) .s2 .ph, .ballot:not(:has([name="r3"]:checked)) .s3 .ph { display: block; }
+.ballot:has(#r1-vault:checked) .s2 [data-d="vault"], .ballot:is(:has(#r1-vault:checked), :has(#r2-vault:checked)) .s3 [data-d="vault"] { display: none; }
+.ballot:has(#r1-vault:checked):has(#r2-vault:checked) .s2 .ph, .ballot:is(:has(#r1-vault:checked), :has(#r2-vault:checked)):has(#r3-vault:checked) .s3 .ph { display: block; }
+.ballot:has(#r1-cake:checked) .s2 [data-d="cake"], .ballot:is(:has(#r1-cake:checked), :has(#r2-cake:checked)) .s3 [data-d="cake"] { display: none; }
+.ballot:has(#r1-cake:checked):has(#r2-cake:checked) .s2 .ph, .ballot:is(:has(#r1-cake:checked), :has(#r2-cake:checked)):has(#r3-cake:checked) .s3 .ph { display: block; }
+.ballot:has(#r1-polls:checked) .s2 [data-d="polls"], .ballot:is(:has(#r1-polls:checked), :has(#r2-polls:checked)) .s3 [data-d="polls"] { display: none; }
+.ballot:has(#r1-polls:checked):has(#r2-polls:checked) .s2 .ph, .ballot:is(:has(#r1-polls:checked), :has(#r2-polls:checked)):has(#r3-polls:checked) .s3 .ph { display: block; }
+.ballot:has(#r1-paid:checked) .s2 [data-d="paid"], .ballot:is(:has(#r1-paid:checked), :has(#r2-paid:checked)) .s3 [data-d="paid"] { display: none; }
+.ballot:has(#r1-paid:checked):has(#r2-paid:checked) .s2 .ph, .ballot:is(:has(#r1-paid:checked), :has(#r2-paid:checked)):has(#r3-paid:checked) .s3 .ph { display: block; }
+.ballot:has(#r1-market:checked) .s2 [data-d="market"], .ballot:is(:has(#r1-market:checked), :has(#r2-market:checked)) .s3 [data-d="market"] { display: none; }
+.ballot:has(#r1-market:checked):has(#r2-market:checked) .s2 .ph, .ballot:is(:has(#r1-market:checked), :has(#r2-market:checked)):has(#r3-market:checked) .s3 .ph { display: block; }
+.ballot:has(#r1-onboard:checked) .s2 [data-d="onboard"], .ballot:is(:has(#r1-onboard:checked), :has(#r2-onboard:checked)) .s3 [data-d="onboard"] { display: none; }
+.ballot:has(#r1-onboard:checked):has(#r2-onboard:checked) .s2 .ph, .ballot:is(:has(#r1-onboard:checked), :has(#r2-onboard:checked)):has(#r3-onboard:checked) .s3 .ph { display: block; }
+.out .note { margin: 8px 0 0; font-size: 18px; color: #5e6ca6; }
+
+/* SIGNAL.EXE */
+.signals .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
+.why3 { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+.why3 li { border-top: 1px solid var(--line); padding-top: 14px; color: var(--pale); font-size: 16.5px; }
+.why3 b { color: var(--white); font-weight: 500; }
+.dos fieldset { border: 0; margin: 0 0 20px; padding: 0; min-width: 0; }
+.dos legend { padding: 0; margin-bottom: 8px; color: var(--white); }
+.dos legend span { color: var(--turq); }
+.dos legend small { display: block; font: 400 13.5px/1.45 var(--mono); color: var(--pale); margin-top: 2px; }
+.opts { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.opts label { cursor: pointer; color: var(--pale); white-space: nowrap; }
+.opts input[type=radio] + label::before { content: "( ) "; }
+.opts input[type=radio]:checked + label::before { content: "(•) "; color: var(--turq); }
+.opts input[type=checkbox] + label::before { content: "[ ] "; }
+.opts input[type=checkbox]:checked + label::before { content: "[x] "; color: var(--turq); }
+.opts input:checked + label { color: var(--white); }
+.opts input:focus-visible + label { outline: 2px solid var(--turq); outline-offset: 2px; }
+.dial { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 2fr); max-width: 540px; border: 2px solid var(--white); }
+.dial label { text-align: center; padding: 2px 0; border-left: 2px solid var(--white); color: var(--pale); }
+.dial label:first-of-type { border-left: 0; }
+.dial input[type=radio] + label::before { content: none; }
+.dial input:checked + label { background: var(--turq); color: var(--navy); }
+.receipt { margin: 8px 0 0; font: 400 21px/1.25 var(--px); white-space: pre-wrap; overflow-wrap: anywhere; max-width: 440px; }
+.receipt .v { color: var(--ink); }
+.receipt [data-for], .receipt .none { display: none; }
+.dos:has(#p-yes:checked) [data-for="p-yes"], .dos:has(#p-later:checked) [data-for="p-later"], .dos:has(#p-no:checked) [data-for="p-no"],
+.dos:has(#h-test:checked) [data-for="h-test"], .dos:has(#h-review:checked) [data-for="h-review"], .dos:has(#h-build:checked) [data-for="h-build"],
+.dos:has(#f-dk:checked) [data-for="f-dk"], .dos:has(#f-10:checked) [data-for="f-10"], .dos:has(#f-30:checked) [data-for="f-30"], .dos:has(#f-50:checked) [data-for="f-50"], .dos:has(#f-70:checked) [data-for="f-70"], .dos:has(#f-90:checked) [data-for="f-90"],
+.dos:not(:has([name="pref"]:checked)) .none.p, .dos:not(:has(.help input:checked)) .none.h, .dos:not(:has([name="fc"]:checked)) .none.f { display: inline; }
+
+/* ───────── stages ───────── */
+.stages { list-style: none; margin: 46px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.stage { display: grid; gap: 10px; align-content: start; }
+.stage figure { margin: 0 0 6px; border: 1px solid var(--line); height: 262px; display: grid; place-items: end center; overflow: hidden; background: var(--cobalt-deep); }
+.stage img { image-rendering: pixelated; display: block; opacity: var(--art); }
+.stage .when { display: flex; align-items: center; gap: 9px; color: var(--pale); }
+.stage .when::before { content: ""; width: 9px; height: 9px; border: 1px solid currentColor; }
+.stage.now .when { color: var(--turq); }
+.stage.now .when::before { background: var(--turq); border-color: var(--turq); animation: blink 1.6s steps(1) infinite; }
+.stage h3 { font: var(--dw) calc(40px * var(--dsize2))/1 var(--display); margin: 0; }
+.stage p { margin: 0; color: var(--pale); font-size: 16.5px; max-width: 30em; }
+.boundary { margin: 46px 0 0; padding: 20px 0 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 18px clamp(32px, 6vw, 96px); align-items: start; }
+.boundary p { margin: 0; color: var(--pale); }
+.boundary strong { color: var(--white); font-weight: 500; }
+.etym { font: var(--dw) calc(21px * var(--dsize2))/1.5 var(--display); }
+.etym .gr { font: 400 1.1em var(--greek); color: var(--white); }
+
+/* ───────── ground rules (paper) ───────── */
+.rules .wrap { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.wordmark { font: 700 min(84px, 6.2vw)/1.12 var(--slab); letter-spacing: .04em; margin: 0 0 18px; width: max-content; max-width: 100%; padding-bottom: .04em; color: transparent;
+  background: repeating-linear-gradient(180deg, var(--ink) 0 .052em, transparent .052em .083em); background-position: 0 .17em; -webkit-background-clip: text; background-clip: text; }
+.rule-list { margin: 0; padding: 0; list-style: none; counter-reset: r; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 34px; }
+.rule-list li { counter-increment: r; display: grid; grid-template-columns: 44px 1fr; padding: 18px 0; border-top: 1px solid var(--rule); }
+.rule-list li::before { content: counter(r, decimal-leading-zero); font: 500 13px/1.9 var(--mono); color: var(--ink); }
+.rule-list b { display: block; font: var(--dw2) calc(22px * var(--dsize2))/1.25 var(--display); color: var(--ink); margin-bottom: 4px; }
+.rule-list span { font-size: 16px; }
+
+/* ───────── close ───────── */
+.close { padding-bottom: 0; overflow: hidden; }
+.close .wrap { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.close .coin { width: 192px; height: 192px; image-rendering: pixelated; display: block; margin-bottom: 26px; }
+.close p { color: var(--pale); margin: 0 0 16px; max-width: 34em; }
+.asks { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.asks li { border: 1px solid var(--line); padding: 12px 14px 14px; display: grid; gap: 6px; align-content: start; }
+.asks b { font: 500 12px/1.35 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--turq); }
+.asks span { font-size: 15px; line-height: 1.45; color: var(--pale); }
+.contact { margin: 26px 0 0; display: grid; gap: 10px; }
+.contact .who { margin: 0; font: var(--dw2) calc(24px * var(--dsize2))/1.2 var(--display); color: var(--white); }
+.handles { margin: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; }
+.handles div { display: grid; gap: 2px; border: 1px solid var(--line); padding: 8px 12px 9px; }
+.handles dt { font: 500 11px/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.handles dd { margin: 0; font: 500 15px/1.3 var(--mono); color: var(--white); }
+.handles a { color: var(--turq); text-underline-offset: 3px; }
+.card { margin: 0; }
+.card .sheet { background: var(--paper); padding: 10px 12px 6px; box-shadow: 10px 10px 0 rgba(4, 18, 90, .35); transform: rotate(-2deg); }
+.card img { display: block; width: 100%; height: auto; }
+.card figcaption { color: var(--pale); margin-top: 22px; }
+.delphi { opacity: var(--art); display: block; width: 100%; height: clamp(200px, 33vw, 480px); object-fit: cover; object-position: 50% 100%; image-rendering: pixelated; margin-top: clamp(40px, 6vw, 80px); }
+
+/* ───────── status bar ───────── */
+.statusbar { background: var(--turq); color: var(--navy); font: 400 23px/1.3 var(--px); }
+.statusbar .wrap { display: flex; flex-wrap: wrap; gap: 4px 24px; padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
+.statusbar a { text-decoration: none; }
+.statusbar a b { font-weight: 400; color: var(--white); background: var(--navy); padding: 0 6px; margin-right: 6px; }
+.statusbar a:hover { text-decoration: underline; }
+.statusbar .r { margin-left: auto; }
+.colophon { background: var(--navy); color: var(--muted); }
+.colophon .wrap { padding-top: 18px; padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px)); font: 400 12.5px/1.6 var(--mono); }
+.colophon p { margin: 0; max-width: 84em; }
+
+/* ───────── responsive ───────── */
+@media (max-width: 1180px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr) 480px; min-height: 520px; }
+  .oracle { width: 480px; height: 520px; }
+  .oracle img { width: 480px; height: 600px; }
+  .featured .cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 960px) {
+  .sec-head, .try-head, .signals .wrap, .rules .wrap, .close .wrap, .ballot-in, .boundary { grid-template-columns: 1fr; }
+  .pair { grid-template-columns: 1fr; }
+  .loop { grid-template-columns: 1fr 1fr; }
+  .loop li { border-right: 1px solid var(--line); border-bottom: 0; }
+  .loop li:nth-child(odd) { border-right: 0; }
+  .loop li:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .loop li:not(:last-child)::after { display: none; }
+  .stages { grid-template-columns: 1fr; max-width: 520px; }
+  .rule-list { grid-template-columns: 1fr; }
+  .wordmark { font-size: min(84px, 16vw); }
+  .out { max-width: 440px; }
+  .card { max-width: 560px; }
+}
+@media (max-width: 860px) {
+  .topbar nav { display: none; }
+  .hero .wrap { grid-template-columns: 1fr; min-height: 0; }
+  .copy { padding: 36px 0 10px; }
+  .copy .foot { padding-top: 32px; }
+  .oracle { width: 320px; height: 400px; justify-self: end; margin-right: -8px; }
+  .oracle img { width: 320px; height: 400px; }
+  .vapor span { font-size: 10px; }
+  .bgword { top: auto; bottom: 40px; }
+}
+@media (max-width: 560px) {
+  body { font-size: 17px; }
+  .label { font-size: 12.5px; letter-spacing: .1em; }
+  .cards, .asks { grid-template-columns: 1fr; }
+  .loop { grid-template-columns: 1fr; }
+  .loop li, .loop li:nth-child(odd) { border-right: 1px solid var(--line); border-top: 1px solid var(--line); }
+  .brief { padding: 22px 30px 20px; }
+  .brief::before, .brief::after { width: 14px; background-size: 14px 24px; background-position: -3px 0; }
+  .fields dd { font-size: 16px; }
+  .dos { font-size: 22px; }
+  .lh, .row { grid-template-columns: minmax(0, 1fr) repeat(3, 38px); gap: 0 7px; }
+  .dir b { font-size: 24px; }
+  .vapor span:nth-child(n+4) { display: none; }
+  .statusbar .r { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cursor, .pill i, .finding .label i, .stage.now .when::before { animation: none; }
+  .vapor span { animation: none; opacity: .55; }
+}
+</style>
+</head>
+<body id="top">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="mark" href="#top"><img src="assets/coin-128.png" width="128" height="128" alt="">PITHIA</a>
+    <span class="label pill"><i></i>Concept preview</span>
+    <nav class="label" aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#how">How it works</a>
+      <a href="#vote">Vote</a>
+      <a href="#stages">Stages</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ───────── HERO ───────── -->
+<section class="hero" aria-labelledby="h-hero">
+  <div class="bgword" aria-hidden="true">PITHIA</div>
+  <div class="wrap">
+    <div class="copy">
+      <p class="label kicker">Independent research and experiments for Decred<span class="cursor" aria-hidden="true"></span></p>
+      <h1 id="h-hero">What should Decred build <em>next?</em></h1>
+      <p class="lede">Pithia investigates what Decred could build, tests the promising ideas and publishes the evidence. <span>Stakeholders vote on what comes first.</span></p>
+      <p class="sublede">The point is to judge ideas on evidence before anyone commits time or treasury funds. AI agents do the digging and prototyping; a human editor reviews the evidence and marks what is still unresolved.</p>
+      <div class="ctas">
+        <a class="btn" href="#research">See the first investigations</a>
+        <a class="textlink" href="#vote">Try the vote →</a>
+      </div>
+      <div class="foot">
+        <div class="cards">
+          <a class="finding" href="#inv-01">
+            <span class="label"><i></i>01 · Experiment</span>
+            <span class="t">A 196-byte covenant on today’s Decred, no fork needed. dcrd’s own engine accepts it, and a real spend was mined on a private simnet.</span>
+            <span class="label go">See the test log →</span>
+          </a>
+          <a class="finding" href="#inv-02">
+            <span class="label"><i></i>02 · Hypothesis</span>
+            <span class="t">Cake Wallet’s docs warn that DCR backups can fail. Its source code suggests a likely cause, and a cheap way to test it.</span>
+            <span class="label go">Read the brief →</span>
+          </a>
+        </div>
+        <p class="name"><b>Pi·thia</b> <span>/ˈpɪθ.i.ə/</span> · <b>Pi</b>, as in Politeia, + <b>Pythia</b>, the oracle at Delphi. An oracle that shows its sources.</p>
+        <p class="label legal">An independent concept by Jure, shared for feedback · Not an official Decred project · The vote and signal screens are demos</p>
+      </div>
+    </div>
+    <figure class="oracle">
+      <img src="assets/bust-320.png" width="320" height="400" alt="One-bit pixel illustration of a veiled oracle with a laurel wreath, eyes closed, holding a shallow bowl from which vapor rises.">
+      <div class="vapor" aria-hidden="true">
+        <span style="left:12%;top:58%;--dx:-40px;animation-delay:0s">231 proposal records</span>
+        <span style="left:16%;top:59%;--dx:10px;animation-delay:2s">ticketvote/v1</span>
+        <span style="left:10%;top:58%;--dx:-55px;animation-delay:4s">OP_CAT · 196 bytes</span>
+        <span style="left:15%;top:60%;--dx:20px;animation-delay:6s">dcrd 2.1.7 simnet</span>
+        <span style="left:11%;top:59%;--dx:-30px;animation-delay:8s">cake v6.5.0 · data.bin</span>
+        <span style="left:14%;top:58%;--dx:-10px;animation-delay:10s">40,858 tickets</span>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<div class="dither d-cp" aria-hidden="true"></div>
+
+<!-- ───────── RESEARCH ───────── -->
+<section class="band paper research" id="research" aria-labelledby="h-research">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="label eyebrow">The first investigations</p>
+        <h2 id="h-research">What the first round <em>found.</em></h2>
+        <p>Three investigations at three different stages: one tested experiment, one hypothesis that needs testing, one comparison of approaches. Each shows what is known, the strongest objection and the next useful test, and each is open to challenge.</p>
+      </div>
+      <ul class="qs label" aria-label="Every investigation shows">
+        <li>What is known, and how</li>
+        <li>What was tested</li>
+        <li>The strongest objection</li>
+        <li>The next useful test</li>
+        <li>What we still don’t know</li>
+      </ul>
+    </div>
+
+    <!-- Investigation 01: featured experiment -->
+    <article class="brief featured" id="inv-01" aria-labelledby="t-01">
+      <div class="b-head label"><span>Investigation 01 · Script</span><span class="status exp">Tested on a private network · reproduction invited</span></div>
+      <div class="cols">
+        <div>
+          <h3 id="t-01">A covenant on today’s Decred</h3>
+          <p class="q">Can Decred’s existing script rules force coins to go to one exact place?</p>
+          <p class="take"><b>Takeaway</b>Yes, in a narrow form: today’s Decred script can lock coins to one exact destination, with no fork. That is a building block for theft-response vaults, not a vault yet.</p>
+          <dl class="fields">
+            <div><dt>What was tested <small>· tested</small></dt><dd>A 196-byte script, built only from opcodes Decred already has, lets coins move to one fixed output and nowhere else. No fork, no new opcode. dcrd’s own script engine accepted it and rejected five tampered spends. On a private simnet running dcrd 2.1.7, a real spend passed standard mempool policy and was mined.</dd></div>
+            <div class="obj"><dt>Strongest objection</dt><dd>It isn’t a vault. Amount and destination are fixed in advance, anyone can trigger the payment, and there is no recovery path, staking support or audit.</dd></div>
+            <div><dt>Why it matters <small>· interpretation</small></dt><dd>Rules like this are the building block of theft-response vaults: withdrawals that wait out a delay and can be clawed back from cold storage.</dd></div>
+            <div class="exp"><dt>Next useful test</dt><dd>A fixed-amount, two-stage vault on simnet: the hot key can only move coins to a staging output, a delay follows, and a cold key can recover during it. Then independent review. First, ask holders whether they want this.</dd></div>
+          </dl>
+        </div>
+        <div>
+          <p class="panel-h label"><span>Captured output · excerpt</span><span>tested</span></p>
+<pre class="tlog" aria-label="Captured test output, excerpt"><span class="c">$ go test ./...          txscript v4.1.2</span>
+<b>PASS</b> redeem 196 B, sigscript 324 B
+<b>PASS</b> same script, different deposit
+  tampered destination    rejected
+  tampered amount         rejected
+  extra output            rejected
+  wrong prefix            rejected
+  wrong witness hash      rejected
+<span class="c">$ go test -run Simnet    dcrd 2.1.7</span>
+  changed destination     OP_EQUALVERIFY
+<b>PASS</b> mempool (--rejectnonstd), 10k-atom fee
+<b>PASS</b> mined at height 33
+     txid 321e88e7…0639a225</pre>
+          <div class="repro">
+            <p class="label" style="margin:0;color:var(--ink)">▸ Reproduce it</p>
+<pre><i># in the experiment folder, Go 1.24 or newer</i>
+go test -count=1 -v ./...
+<i># full-node check, needs a dcrd 2.1.7 binary</i>
+COVENANT_SIMNET_DCRD=/path/to/dcrd \
+  go test -count=1 -run TestSimnetFundedCovenant -v ./...</pre>
+            <ul class="files" aria-label="Experiment files">
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/covenant_test.go">covenant_test.go</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/simnet_test.go">simnet_test.go</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/go.mod">go.mod</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/go.sum">go.sum</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/result.txt">result.txt</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/simnet-v2.1.7-result.txt">simnet result</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/simnet-v2.1.7-result.json">simnet result.json</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/README.md">README.md</a></li>
+              <li><a href="https://github.com/Tsunekazu/pithia/blob/main/evidence/covenants/SIMNET.md">SIMNET.md</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <details class="more">
+        <summary>How it works, limits &amp; sources</summary>
+        <div class="in">
+          <div><h4>How it works <small>· interpretation</small></h4><p>The script rebuilds the signature hash from a constrained transaction prefix, then checks a Schnorr signature it synthesises itself. It adapts Andrew Poelstra’s CAT-and-Schnorr tricks to Decred’s BLAKE-256 and Schnorr conventions.</p></div>
+          <div><h4>Limits</h4><p>Decred’s signature hash doesn’t commit to input value, so this is not an arbitrary-balance covenant. The search for prior art was bounded, so no claim of first discovery is made.</p></div>
+          <div><h4>Still unknown <small>· open</small></h4><ul class="chips"><li>Full vault security</li><li>Flexible amounts &amp; fees</li><li>Staking compatibility</li><li>Real demand</li></ul></div>
+          <div><h4>Sources</h4><ul class="src">
+            <li><a href="https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-i.html">Poelstra · CAT and Schnorr Tricks I</a></li>
+            <li><a href="https://www.wpsoftware.net/andrew/blog/cat-and-schnorr-tricks-ii.html">Poelstra · CAT and Schnorr Tricks II (vaults)</a></li>
+            <li><a href="https://github.com/decred/dcrd/blob/master/txscript/opcode.go">dcrd · txscript/opcode.go</a></li>
+            <li><a href="https://github.com/decred/dcrd/blob/master/txscript/sighash.go">dcrd · txscript/sighash.go</a></li>
+            <li><a href="https://github.com/decred/dcrd/blob/master/internal/mempool/policy.go">dcrd · mempool/policy.go</a></li>
+          </ul></div>
+        </div>
+      </details>
+    </article>
+
+    <div class="pair">
+      <!-- Investigation 02 -->
+      <article class="brief" id="inv-02" aria-labelledby="t-02">
+        <div class="b-head label"><span>Investigation 02 · Wallets</span><span class="status hyp">Hypothesis · needs testing</span></div>
+        <h3 id="t-02">Why can DCR backups fail in Cake Wallet?</h3>
+        <p class="q">And could one targeted fix make them reliable?</p>
+        <p class="take"><b>Takeaway</b>Cake’s own docs say large DCR wallets can break backups. The backup code suggests a likely cause, and it can be tested cheaply before anyone writes a fix.</p>
+        <dl class="fields">
+          <div><dt>What is known <small>· sourced</small></dt><dd>Cake supports DCR (v6.5.0). Its own Decred docs say the wallet data makes backups very large and can make backup creation fail. Stakeholders approved Cake proposals in 2023 and 2025.</dd></div>
+          <div class="obj"><dt>Strongest objection</dt><dd>We have not established how often DCR backups fail in practice, or how many people use DCR in Cake. A fix may already be planned.</dd></div>
+          <div class="exp"><dt>Next useful test</dt><dd>Test whether the backup pipeline produces the suspected memory spike, using synthetic files and the exact library version Cake pins. Agree on acceptance criteria with a maintainer before writing any fix.</dd></div>
+        </dl>
+        <details class="more">
+          <summary>Hypothesis, unknowns &amp; sources</summary>
+          <div class="in">
+            <div><h4>What the source suggests <small>· interpretation</small></h4><p>The backup encrypts wallet data in chunks into one large file, then compresses it into a ZIP. The pinned ZIP encoder holds the compressed output in memory, so a big DCR wallet may run a phone out of memory.</p></div>
+            <div><h4>Why it matters</h4><p>Wallets drop coins that cost too much to maintain. Cake’s docs describe phasing out Zano, citing maintenance burden relative to usage.</p></div>
+            <div><h4>Still unknown <small>· open</small></h4><ul class="chips"><li>Real failure rate</li><li>Peak memory on devices</li><li>DCR users in Cake</li><li>Already planned?</li></ul></div>
+            <div><h4>Sources</h4><ul class="src">
+              <li><a href="https://docs.cakewallet.com/cryptos/decred">Cake docs · Decred</a></li>
+              <li><a href="https://docs.cakewallet.com/cryptos/zano">Cake docs · Zano phase-out</a></li>
+              <li><a href="https://github.com/cake-tech/cake_wallet/blob/v6.5.0/lib/core/backup_service_v3.dart">cake_wallet v6.5.0 · backup_service_v3.dart</a></li>
+              <li><a href="https://github.com/brendan-duncan/archive/blob/f01d6a340ffe24e0ef46fa682d1b6bcc7b7aef13/lib/src/codecs/zip_encoder.dart">archive (pinned) · zip_encoder.dart</a></li>
+              <li><a href="https://dcrdata.decred.org/proposals">Politeia · Cake Wallet Integration Again (2023, 88% yes) · Cake Wallet 2025 (96% yes)</a></li>
+            </ul></div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Investigation 03 -->
+      <article class="brief" id="inv-03" aria-labelledby="t-03">
+        <div class="b-head label"><span>Investigation 03 · Governance</span><span class="status open">Comparing approaches</span></div>
+        <h3 id="t-03">Easier polling for ticket holders</h3>
+        <p class="q">Can ticket holders answer quick, non-binding polls without unlocking a wallet every time?</p>
+        <p class="take"><b>Takeaway</b>Quick ticket polls look feasible with the signing Decred already has. The one-click version risks linking mixed tickets, so privacy has to be answered first.</p>
+        <dl class="fields">
+          <div><dt>What is known <small>· sourced</small></dt><dd>Politeia already verifies ticket votes, and interest in ticket-holder polling goes back at least to 2019. There are two ways to authorise an answer:
+            <ul class="designs">
+              <li><b>A</b><span>Sign every poll in your wallet, as Politeia votes are signed.</span></li>
+              <li><b>B</b><span>A “voter passport”: sign once to authorise a browser key, then answer in one click.</span></li>
+            </ul>
+            Either could run on a Politeia-compatible server, so wallets that already vote could take part.</dd></div>
+          <div class="obj"><dt>Strongest objection</dt><dd>Tying many tickets to one browser key could undo the privacy StakeShuffle mixing gives. And tickets vote after 28 days on average, so a passport tied to specific tickets would need frequent renewal.</dd></div>
+          <div class="exp"><dt>Next useful test</dt><dd>On testnet, check whether existing wallet tools can sign a passport message with a ticket’s key, and count the steps. Compare both designs on privacy and effort before building anything.</dd></div>
+        </dl>
+        <details class="more">
+          <summary>Who benefits, unknowns &amp; sources</summary>
+          <div class="in">
+            <div><h4>Who would benefit</h4><p>Stakeholders who want a say between big Politeia votes, without a wallet ritual for every small question.</p></div>
+            <div><h4>Still unknown <small>· open</small></h4><ul class="chips"><li>Snapshot &amp; signing support</li><li>Privacy of mixed tickets</li><li>Passport expiry rules</li><li>Demand for another poll</li></ul></div>
+            <div><h4>Sources</h4><ul class="src">
+              <li><a href="https://docs.decred.org/governance/politeia/overview/">Decred docs · Politeia overview</a></li>
+              <li><a href="https://docs.decred.org/proof-of-stake/overview/">Decred docs · ticket voting averages 28 days</a></li>
+              <li><a href="https://medium.com/decred/decred-journal-june-2019-81c78144013c">Decred Journal, June 2019 · early polling discussion</a></li>
+              <li><a href="https://dcrdata.decred.org/proposals">dcrdata · 231 proposal records indexed</a></li>
+            </ul></div>
+          </div>
+        </details>
+      </article>
+    </div>
+
+    <p class="queue"><b>Queued next:</b> paid services on Bison Relay · more ways to trade DCR · onboarding help.</p>
+    <!--evidence-appendix-->
+  </div>
+</section>
+
+<div class="dither d-pc" aria-hidden="true"></div>
+
+<!-- ───────── HOW ───────── -->
+<section class="band cobalt how" id="how" aria-labelledby="h-how">
+  <div class="wrap">
+    <p class="label eyebrow">How it works</p>
+    <h2 id="h-how">Make more ideas <em>testable.</em></h2>
+    <p class="big">Decred’s research already lives across code, proposals, documentation and community discussion. Pithia would connect that work, investigate the open questions and turn promising leads into small experiments anyone can inspect.</p>
+    <ol class="loop">
+      <li><span class="n">01</span><span class="label who">AI agents</span><h3>Investigate</h3><p>Agents read past Politeia proposals, the source code of wallets and nodes, and outside research, and run small tests where they can.</p></li>
+      <li><span class="n">02</span><span class="label who">Human editor</span><h3>Review</h3><p>An editor checks the evidence, marks what is unresolved and writes a short brief for each promising direction.</p></li>
+      <li><span class="n">03</span><span class="label who">Stakeholders</span><h3>Vote</h3><p>Stakeholders rank the shortlist and say what they would help with.</p></li>
+      <li><span class="n">04</span><span class="label who">Builders</span><h3>Test</h3><p>The top picks get small, cheap experiments. Results are published, good or bad.</p></li>
+    </ol>
+    <p class="return" aria-hidden="true"><span class="label">Results feed the next round</span></p>
+    <p class="aside">Agents investigate and prototype. <em>People review and decide.</em></p>
+  </div>
+</section>
+
+<div class="dither d-cn" aria-hidden="true"></div>
+
+<!-- ───────── VOTE ───────── -->
+<section class="band navy desk vote" id="vote" aria-labelledby="h-vote">
+  <div class="wrap">
+    <div class="try-head">
+      <div>
+        <p class="label eyebrow">Try it</p>
+        <h2 id="h-vote">Pithia’s first shortlist. <em>Pick your top three.</em></h2>
+      </div>
+      <p>Six directions from the first round: three investigated above, three still queued. Rank three and your roadmap fills in. Nothing is recorded.</p>
+    </div>
+    <div class="dos ballot" role="group" aria-labelledby="ballot-title">
+      <span class="title" id="ballot-title">ROADMAP.EXE · Round 1</span>
+      <div class="ballot-in">
+        <div class="list">
+          <div class="lh" aria-hidden="true"><span>Direction</span><span>1st</span><span>2nd</span><span>3rd</span></div>
+          <div class="row"><div class="dir"><b>Theft-response vaults</b><small>Coins that wait out a delay and can be clawed back. Built on today’s script.</small><i>Tested</i> <a class="bl" href="#inv-01">Investigation 01 ↑</a></div><input class="sr" type="radio" name="r1" id="r1-vault"><label for="r1-vault"><span class="vh">Theft-response vaults, first choice</span><span aria-hidden="true">1</span></label><input class="sr" type="radio" name="r2" id="r2-vault"><label for="r2-vault"><span class="vh">Theft-response vaults, second choice</span><span aria-hidden="true">2</span></label><input class="sr" type="radio" name="r3" id="r3-vault"><label for="r3-vault"><span class="vh">Theft-response vaults, third choice</span><span aria-hidden="true">3</span></label></div>
+          <div class="row"><div class="dir"><b>Cake Wallet backups</b><small>Fix a documented backup problem in a wallet people already use.</small><i>Needs testing</i> <a class="bl" href="#inv-02">Investigation 02 ↑</a></div><input class="sr" type="radio" name="r1" id="r1-cake"><label for="r1-cake"><span class="vh">Cake Wallet backups, first choice</span><span aria-hidden="true">1</span></label><input class="sr" type="radio" name="r2" id="r2-cake"><label for="r2-cake"><span class="vh">Cake Wallet backups, second choice</span><span aria-hidden="true">2</span></label><input class="sr" type="radio" name="r3" id="r3-cake"><label for="r3-cake"><span class="vh">Cake Wallet backups, third choice</span><span aria-hidden="true">3</span></label></div>
+          <div class="row"><div class="dir"><b>Ticket polls</b><small>Quick, non-binding polls that ticket holders can answer.</small><i>Comparing approaches</i> <a class="bl" href="#inv-03">Investigation 03 ↑</a></div><input class="sr" type="radio" name="r1" id="r1-polls"><label for="r1-polls"><span class="vh">Ticket polls, first choice</span><span aria-hidden="true">1</span></label><input class="sr" type="radio" name="r2" id="r2-polls"><label for="r2-polls"><span class="vh">Ticket polls, second choice</span><span aria-hidden="true">2</span></label><input class="sr" type="radio" name="r3" id="r3-polls"><label for="r3-polls"><span class="vh">Ticket polls, third choice</span><span aria-hidden="true">3</span></label></div>
+          <div class="row"><div class="dir"><b>Paid services on Bison Relay</b><small>Find one person who would pay DCR for a service, then run a full purchase over dcr402 or Bison Relay.</small><i class="q">Queued · needs a customer</i></div><input class="sr" type="radio" name="r1" id="r1-paid"><label for="r1-paid"><span class="vh">Paid services on Bison Relay, first choice</span><span aria-hidden="true">1</span></label><input class="sr" type="radio" name="r2" id="r2-paid"><label for="r2-paid"><span class="vh">Paid services on Bison Relay, second choice</span><span aria-hidden="true">2</span></label><input class="sr" type="radio" name="r3" id="r3-paid"><label for="r3-paid"><span class="vh">Paid services on Bison Relay, third choice</span><span aria-hidden="true">3</span></label></div>
+          <div class="row"><div class="dir"><b>More ways to trade DCR</b><small>Name the trading route people actually want, and who would run it, before designing anything.</small><i class="q">Queued · needs partners</i></div><input class="sr" type="radio" name="r1" id="r1-market"><label for="r1-market"><span class="vh">More ways to trade DCR, first choice</span><span aria-hidden="true">1</span></label><input class="sr" type="radio" name="r2" id="r2-market"><label for="r2-market"><span class="vh">More ways to trade DCR, second choice</span><span aria-hidden="true">2</span></label><input class="sr" type="radio" name="r3" id="r3-market"><label for="r3-market"><span class="vh">More ways to trade DCR, third choice</span><span aria-hidden="true">3</span></label></div>
+          <div class="row"><div class="dir"><b>Onboarding help</b><small>Find the step where new users give up between buying DCR and staking it.</small><i class="q">Queued · needs a diagnosis</i></div><input class="sr" type="radio" name="r1" id="r1-onboard"><label for="r1-onboard"><span class="vh">Onboarding help, first choice</span><span aria-hidden="true">1</span></label><input class="sr" type="radio" name="r2" id="r2-onboard"><label for="r2-onboard"><span class="vh">Onboarding help, second choice</span><span aria-hidden="true">2</span></label><input class="sr" type="radio" name="r3" id="r3-onboard"><label for="r3-onboard"><span class="vh">Onboarding help, third choice</span><span aria-hidden="true">3</span></label></div>
+          <p class="warn">One direction can only take one place. Pick a different one.</p>
+        </div>
+        <div class="out slip" aria-label="Your roadmap">
+          <p class="oh">── YOUR ROADMAP ──</p>
+          <div class="slot s1"><span class="k">Next</span><span class="pick" data-d="vault">Theft-response vaults</span><span class="pick" data-d="cake">Cake Wallet backups</span><span class="pick" data-d="polls">Ticket polls</span><span class="pick" data-d="paid">Paid services on Bison Relay</span><span class="pick" data-d="market">More ways to trade DCR</span><span class="pick" data-d="onboard">Onboarding help</span><span class="ph">— pick one —</span></div>
+          <div class="slot s2"><span class="k">Then</span><span class="pick" data-d="vault">Theft-response vaults</span><span class="pick" data-d="cake">Cake Wallet backups</span><span class="pick" data-d="polls">Ticket polls</span><span class="pick" data-d="paid">Paid services on Bison Relay</span><span class="pick" data-d="market">More ways to trade DCR</span><span class="pick" data-d="onboard">Onboarding help</span><span class="ph">— pick one —</span></div>
+          <div class="slot s3"><span class="k">After that</span><span class="pick" data-d="vault">Theft-response vaults</span><span class="pick" data-d="cake">Cake Wallet backups</span><span class="pick" data-d="polls">Ticket polls</span><span class="pick" data-d="paid">Paid services on Bison Relay</span><span class="pick" data-d="market">More ways to trade DCR</span><span class="pick" data-d="onboard">Onboarding help</span><span class="ph">— pick one —</span></div>
+          <p class="note">Nothing is sent or stored.</p>
+        </div>
+      </div>
+      <p class="fine">In a real round, Pithia would publish the totals and the investigation behind each direction. Early rounds would be informal; votes backed by tickets come later.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── SIGNALS ───────── -->
+<section class="band navy desk signals" id="signals" aria-labelledby="h-signals" style="padding-top:0">
+  <div class="wrap">
+    <div>
+      <p class="label eyebrow">Signals</p>
+      <h2 id="h-signals">For each direction, three separate <em>questions.</em></h2>
+      <p class="big">Wanting something, helping with it and expecting it to work are different things. Most polls blur them together. Pithia asks them separately.</p>
+      <ul class="why3">
+        <li><b>Lots of “yes, build it” and nobody willing to test it</b> is phantom demand. Cheaper to spot before a proposal than after.</li>
+        <li><b>An unpopular idea with three committed testers</b> might deserve a small experiment.</li>
+        <li><b>Forecasts get checked</b> when the date arrives. Over time that becomes a public track record.</li>
+      </ul>
+    </div>
+
+    <div class="dos" role="group" aria-labelledby="sig-title">
+      <span class="title" id="sig-title">SIGNAL.EXE · Investigation 02</span>
+      <p class="sub">Why DCR backups fail in Cake Wallet. Answer all three; this demo records nothing.</p>
+
+      <fieldset>
+        <legend><span>1</span> Preference <small>Is this worth investigating further?</small></legend>
+        <div class="opts">
+          <input class="sr" type="radio" name="pref" id="p-yes"><label for="p-yes">Yes</label>
+          <input class="sr" type="radio" name="pref" id="p-later"><label for="p-later">Not now</label>
+          <input class="sr" type="radio" name="pref" id="p-no"><label for="p-no">No</label>
+        </div>
+      </fieldset>
+
+      <fieldset class="help">
+        <legend><span>2</span> Participation <small>Would you help? Leave all empty if you’d just watch.</small></legend>
+        <div class="opts">
+          <input class="sr" type="checkbox" id="h-test"><label for="h-test">Test on my phone</label>
+          <input class="sr" type="checkbox" id="h-review"><label for="h-review">Review a fix</label>
+          <input class="sr" type="checkbox" id="h-build"><label for="h-build">Help build it</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span>3</span> Forecast <small>Will a memory test reproduce the backup failure by 31 Jan 2027?</small></legend>
+        <div class="opts dial">
+          <input class="sr" type="radio" name="fc" id="f-10"><label for="f-10">10%</label>
+          <input class="sr" type="radio" name="fc" id="f-30"><label for="f-30">30%</label>
+          <input class="sr" type="radio" name="fc" id="f-50"><label for="f-50">50%</label>
+          <input class="sr" type="radio" name="fc" id="f-70"><label for="f-70">70%</label>
+          <input class="sr" type="radio" name="fc" id="f-90"><label for="f-90">90%</label>
+          <input class="sr" type="radio" name="fc" id="f-dk"><label for="f-dk">Don’t know</label>
+        </div>
+      </fieldset>
+
+<div class="receipt slip" aria-label="Signal receipt">── SIGNAL RECEIPT ──
+INV     <span class="v">02 · cake backups</span>
+PREFER  <span class="v"><span data-for="p-yes">investigate</span><span data-for="p-later">not now</span><span data-for="p-no">no</span><span class="none p">—</span></span>
+HELP    <span class="v"><span data-for="h-test">test </span><span data-for="h-review">review </span><span data-for="h-build">build</span><span class="none h">just watching</span></span>
+EXPECT  <span class="v"><span data-for="f-10">10%</span><span data-for="f-30">30%</span><span data-for="f-50">50%</span><span data-for="f-70">70%</span><span data-for="f-90">90%</span><span data-for="f-dk">don’t know</span><span class="none f">—</span></span> by 2027-01-31
+──────────────────
+DEMO · NOT RECORDED</div>
+      <p class="fine">Three answers, three meanings. In a real poll each would be counted on its own.</p>
+    </div>
+  </div>
+</section>
+
+<div class="dither d-nc" aria-hidden="true"></div>
+
+<!-- ───────── STAGES ───────── -->
+<section class="band cobalt stages-band" id="stages" aria-labelledby="h-stages">
+  <div class="wrap">
+    <p class="label eyebrow">Stages</p>
+    <h2 id="h-stages">How Pithia could <em>grow.</em></h2>
+    <ol class="stages">
+      <li class="stage now">
+        <figure><img src="assets/tripod-160.png" width="160" height="240" alt="One-bit illustration of the oracle seated on a tall tripod above rising vapor."></figure>
+        <p class="label when">Stage I · Now</p>
+        <h3>Oracle</h3>
+        <p>Investigate questions and publish the evidence: briefs, prototypes and results, in a regular digest in the spirit of the Decred Journal. On the web and on Bison Relay.</p>
+      </li>
+      <li class="stage">
+        <figure><img src="assets/urn-240.png" width="240" height="240" alt="One-bit illustration of a hand dropping a voting pebble into a Greek urn."></figure>
+        <p class="label when">Stage II · Next</p>
+        <h3>Poll</h3>
+        <p>Ticket holders signal priorities and say what they would help with, using the same tickets that vote on Politeia.</p>
+      </li>
+      <li class="stage">
+        <figure><img src="assets/oar-240.png" width="240" height="240" alt="One-bit illustration of an ancient ship’s stern with a steering oar in the waves."></figure>
+        <p class="label when">Stage III · Later</p>
+        <h3>Steer</h3>
+        <p>Connect decisions to outcomes. Funded work is followed through, and the results inform the next decision.</p>
+      </li>
+    </ol>
+    <div class="boundary">
+      <p><strong>Over time, Pithia could become a fuller governance platform.</strong> Whether it complements Politeia or succeeds it would be a separate decision for stakeholders, made through Politeia.</p>
+      <p class="etym"><span class="gr" lang="grc">κυβερνάω</span> <em>kybernáō</em>, to steer: the Greek root of both <em>govern</em> and <em>cybernetics.</em></p>
+    </div>
+  </div>
+</section>
+
+<div class="dither d-cp" aria-hidden="true"></div>
+
+<!-- ───────── GROUND RULES ───────── -->
+<section class="band paper rules" aria-labelledby="h-rules">
+  <div class="wrap">
+    <div>
+      <p class="wordmark" aria-hidden="true">PITHIA</p>
+      <p class="label eyebrow">Ground rules</p>
+      <h2 id="h-rules">What Pithia will and won’t do.</h2>
+    </div>
+    <ol class="rule-list">
+      <li><div><b>Agents investigate. People decide.</b><span>Agents dig and prototype. An editor reviews. Stakeholders choose.</span></div></li>
+      <li><div><b>Every claim is labelled.</b><span>Sourced, tested, interpreted or open. Original research isn’t a guess just because nobody else has published it.</span></div></li>
+      <li><div><b>Reviewer time is part of the budget.</b><span>Maintainers get a runnable result and a scoped question, never a pile of raw AI output.</span></div></li>
+      <li><div><b>Signals advise. Politeia decides.</b><span>Nothing here moves treasury funds.</span></div></li>
+      <li><div><b>The editor’s choices are visible.</b><span>For now Jure picks what gets investigated, from community suggestions. Every shortlist says why each item is on it; corrections and dead ends are published too.</span></div></li>
+      <li><div><b>No new token. No accounts. No tracking.</b><span>This page runs no JavaScript and loads nothing from third parties.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<div class="dither d-pc" aria-hidden="true"></div>
+
+<!-- ───────── CLOSE ───────── -->
+<section class="band cobalt close" aria-labelledby="h-close">
+  <div class="wrap">
+    <div>
+      <img class="coin" src="assets/coin-128.png" width="128" height="128" alt="One-bit illustration of a Greek coin with the oracle’s profile.">
+      <p class="label eyebrow">Concept preview</p>
+      <h2 id="h-close">Which investigation would be useful <em>to you?</em></h2>
+      <p>And what evidence would change your mind? These first investigations show the approach; Pithia as an ongoing service is still only an idea, so your answer decides whether it goes further.</p>
+      <ul class="asks">
+        <li><b>Challenge a finding</b><span>Spot an error, a weak claim or a missing source.</span></li>
+        <li><b>Suggest an investigation</b><span>A question you would like answered with evidence.</span></li>
+        <li><b>Reproduce the experiment</b><span>Run the covenant tests and report what you see.</span></li>
+      </ul>
+      <div class="contact">
+        <p class="who">Talk to Jure</p>
+        <dl class="handles">
+          <div><dt>Bison Relay</dt><dd>tivra</dd></div>
+          <div><dt>Telegram</dt><dd><a href="https://t.me/tivra">@tivra</a></dd></div>
+          <div><dt>X</dt><dd><a href="https://x.com/MercurialPraxis">@MercurialPraxis</a></dd></div>
+        </dl>
+      </div>
+    </div>
+    <figure class="card">
+      <div class="sheet"><img src="assets/punchcard.svg" width="738" height="325" alt="An 80-column IBM punch card whose holes encode the question: What should Decred build next?"></div>
+      <figcaption class="label">Card 1 of 1 · IBM 029 Hollerith · the holes spell the question</figcaption>
+    </figure>
+  </div>
+  <img class="delphi" src="assets/delphi-720.png" width="720" height="240" alt="One-bit illustration of the ruins of the Temple of Apollo at Delphi beneath Mount Parnassus.">
+</section>
+
+</main>
+
+<div class="dither d-cn" aria-hidden="true"></div>
+<footer>
+  <nav class="statusbar" aria-label="Jump to section">
+    <div class="wrap">
+      <a href="#top"><b>F1</b>Top</a>
+      <a href="#research"><b>F2</b>Research</a>
+      <a href="#vote"><b>F3</b>Vote</a>
+      <a href="#stages"><b>F4</b>Stages</a>
+      <span class="r">NO JAVASCRIPT · NO TRACKERS · NO THIRD-PARTY REQUESTS</span>
+    </div>
+  </nav>
+  <div class="colophon">
+    <div class="wrap">
+      <p>Pithia · concept preview v0.5 · research as of 24 Oct 2026 · An independent concept for the Decred community, not an official Decred project. The investigations were produced with AI agents under Jure’s direction; each shows its own evidence and status. The vote and signal screens are demos and record nothing. Illustrations were made with an image model and dithered to 1-bit by script.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
